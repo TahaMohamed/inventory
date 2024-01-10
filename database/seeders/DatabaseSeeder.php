@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\{Category, Item, User};
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,7 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        Category::factory(4)->create();
+        User::factory(10)
+         ->has(
+             Item::factory()
+                 ->count(3)
+         )->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

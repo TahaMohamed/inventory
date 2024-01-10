@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,11 @@ class Item extends Model
 
     protected $guarded = ['id','created_at','updated_at'];
 
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -20,6 +26,6 @@ class Item extends Model
 
     public function supplier(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'supplier_id');
     }
 }
