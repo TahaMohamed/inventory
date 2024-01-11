@@ -25,6 +25,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
+        'banned_at' => 'datetime',
         'password' => 'hashed',
     ];
 
@@ -46,6 +47,12 @@ class User extends Authenticatable
     {
         return $query->whereNull('banned_at')
             ->where(fn($q) => $q->whereNotNull('email_verified_at')->orWhereNotNull('phone_verified_at'));
+    }
+
+    public function isVerified($key): bool
+    {
+        $key = $key . '_verified_at';
+        return array_key_exists($key, $this->attributes) && !is_null($this->{$key});
     }
 
     public function items(): HasMany
