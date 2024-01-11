@@ -35,20 +35,22 @@ class Handler extends ExceptionHandler
             //
         });
 
-        $this->renderable(function (\Exception $exception, Request $request) {
-            if ($request->expectsJson()) {
-                return match (true) {
-                    $exception instanceof HttpException && $exception->getStatusCode() <= Response::HTTP_INTERNAL_SERVER_ERROR =>  ApiResponse::apiResponse(success: false, message: $exception->getMessage(), code: $exception->getStatusCode()),
-                    $exception instanceof AuthenticationException =>  ApiResponse::apiResponse(success: false, message: __('Unauthenticated'), code: Response::HTTP_UNAUTHORIZED),
-                    $exception instanceof ModelNotFoundException ||
-                    $exception instanceof NotFoundHttpException  =>  ApiResponse::apiResponse(success: false, message: __('No data available.'), code: Response::HTTP_NOT_FOUND),
-                    $exception instanceof ValidationException =>  $this->invalidJson($request, $exception),
-                    default => ApiResponse::apiResponse(success: false, message: $exception->getMessage() . " in " . $exception->getFile() . " at line " . $exception->getLine(), code: Response::HTTP_INTERNAL_SERVER_ERROR)
-                };
-            }
+    }
 
-            return parent::render($request, $exception);
-        });
+    public function render($request, $exception)
+    {
+        if ($request->expectsJson()) {
+            return match (true) {
+                $exception instanceof HttpException && $exception->getStatusCode() <= Response::HTTP_INTERNAL_SERVER_ERROR =>  ApiResponse::apiResponse(success: false, message: $exception->getMessage(), code: $exception->getStatusCode()),
+                $exception instanceof AuthenticationException =>  ApiResponse::apiResponse(success: false, message: __('Unauthenticated'), code: Response::HTTP_UNAUTHORIZED),
+                $exception instanceof ModelNotFoundException ||
+                $exception instanceof NotFoundHttpException  =>  ApiResponse::apiResponse(success: false, message: __('No data available.'), code: Response::HTTP_NOT_FOUND),
+                $exception instanceof ValidationException =>  $this->invalidJson($request, $exception),
+                default => ApiResponse::apiResponse(success: false, message: $exception->getMessage() . " in " . $exception->getFile() . " at line " . $exception->getLine(), code: Response::HTTP_INTERNAL_SERVER_ERROR)
+            };
+        }
+
+        return parent::render($request, $exception);
     }
 
     protected function unauthenticated($request, AuthenticationException $exception): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
