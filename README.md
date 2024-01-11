@@ -42,4 +42,7 @@ simple inventory management system, enabling users to add, update, delete, and r
 1. To watch requests that sent to server go to `localhost:8000/telescope`
 1. Use [Apidog Collection](https://fbjufdjek6.apidog.io) to run api services
 
-   
+## Authentication
+To make login on server select `Server` environment and use these credentials:s
+- Username: +18202327356,
+- Password: 123456789
