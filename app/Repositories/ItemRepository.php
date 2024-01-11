@@ -26,17 +26,23 @@ class ItemRepository implements ItemRepositoryInterface
     {
         return $this->model::select($columns)
             ->latest('id')
+            ->when(auth()->user()->isSupplier(), fn($q) => $q->where('supplier_id', auth()->id()))
             ->simplePaginate((int)($perPage ?? config("globals.pagination.per_page")));
     }
 
     public function all(string|array$columns = '*')
     {
-        return $this->model::select($columns)->latest('id')->get();
+        return $this->model::select($columns)
+            ->when(auth()->user()->isSupplier(), fn($q) => $q->where('supplier_id', auth()->id()))
+            ->latest('id')
+            ->get();
     }
 
     public function show(int $id, array $with = []): Item
     {
-        return $this->model::with($with)->findOrFail($id);
+        return $this->model::with($with)
+            ->when(auth()->user()->isSupplier(), fn($q) => $q->where('supplier_id', auth()->id()))
+            ->findOrFail($id);
     }
 
     public function store(array $data): Item

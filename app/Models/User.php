@@ -55,6 +55,11 @@ class User extends Authenticatable
         return array_key_exists($key, $this->attributes) && !is_null($this->{$key});
     }
 
+    public function isSupplier(): bool
+    {
+        return $this->user_type === self::SUPPLIER;
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(Item::class, 'supplier_id');
